@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "cypress": "^12.17.3",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-mailosaur": "^2.13.0",
     "cypress-mochawesome-reporter": "^3.5.1"
   }
 }

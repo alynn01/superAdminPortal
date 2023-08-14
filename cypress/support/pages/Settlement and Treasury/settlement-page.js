@@ -1,3 +1,8 @@
+const serverId = "pilqbdug";
+const serverDomain = serverId + "@mailosaur.io";
+let usersEmail = "signyou" + serverDomain;
+
+
 export class SettlementPage {
   settlementTab = () =>
     cy
@@ -82,5 +87,56 @@ export class SettlementPage {
     cy.wait(8000);
     cy.get("table").contains("KudusLimited").should("be.visible");
     cy.get("table").contains("Ujay Enterprises").should("not.exist");
+  }
+
+  eMoneyTopup(){
+    cy.get(`button:contains("Top-up eMoney")`).click();
+    cy.get('h2').contains("Top-up eMoney");
+    cy.get('[style="margin-top: 1.3rem;"] > .sc-bHCjkL > .input_text').click();
+    cy.contains("Essolo USD account").click();
+    cy.get(':nth-child(4) > .sc-bHCjkL > .input_text').click();
+    cy.contains("UBA").click();
+    cy.wait(2000);
+    cy.get(':nth-child(5) > .sc-bHCjkL > .input_text').click();
+    cy.contains("GTP").click();
+    cy.wait(2000);
+    cy.get(':nth-child(6) > .sc-bHCjkL > .input_text').type("Ujay")
+    cy.get('.sc-ckTduy').contains("Ujay Enterprises").click();
+    cy.get(`input[name="amount"]`).type('1');
+    cy.get(`textarea[name="narration"]`).type("Auto test");
+    cy.get(`button:contains("Proceed")`).click();
+  }
+
+   uploadInvalidFile(){
+    const fileToUpload = "sta.pdf";
+    cy.get('.file-upload-input').attachFile(fileToUpload)
+  }
+
+  proceedSubmission(){
+    cy.get(`button:contains("Upload and continue")`).click();
+    cy.get('.note_action > span').contains("This action is irreversible").should('be.visible');
+    cy.get('h2').contains("Confirm transaction").should('be.visible');
+    cy.get(`button:contains("Confirm and top-up eMoney")`).click();
+    cy.get('.ReactModal__Content > :nth-child(4) > .sc-bHCjkL > .input_text').click();
+    cy.contains('Email').click();
+    cy.get(`button:contains("Yes, continue")`).click();
+  }
+
+  getVerificationOTP() {
+    const currentDate = new Date();
+    const twoMinutesAgo = new Date(currentDate.getTime() - 2 * 60 * 1000);
+    const serverId = "pilqbdug";
+    const searchCriteria = { sentTo: "superAdmin@pilqbdug.mailosaur.net" };
+    return cy
+      .mailosaurGetMessage(serverId, searchCriteria, {
+        sentTo: "superAdmin@pilqbdug.mailosaur.net",
+        receivedAfter: twoMinutesAgo,
+        timeout: 40000,
+      })
+      .then((email) => {
+        expect(email.subject).to.equal("OTP");
+        return email.html.codes[0].value;
+      });
+      
   }
 }
