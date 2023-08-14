@@ -38,7 +38,7 @@ describe("Login Test", () => {
     cy.contains("password is a required field").should("be.visible");
   });
 
-  it("Test that user is unable to login with valid email and password", () => {
+  it("Test that user is able to login with valid email and password", () => {
     loginPage.login(getSA.email, getSA.password);
     cy.contains("Welcome, Amayindi!").should("be.visible");
   });
